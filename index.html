@@ -104,16 +104,20 @@
         object-fit: contain;
       }
 
-      /* Architecture Diagram Styles */
       .architecture-diagram {
         width: 100%;
-        max-width: 700px;
+        max-width: 900px;
         height: auto;
-        margin: 15px auto 20px auto;
+        margin: 20px auto;
         display: block;
-        /* border: 1px solid #ddd; */
         border-radius: 6px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      @media (min-width: 1200px) {
+        .architecture-diagram {
+          max-width: 1000px;
+        }
       }
     </style>
   </head>
