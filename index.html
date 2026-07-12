@@ -111,7 +111,7 @@
         height: auto;
         margin: 15px auto 20px auto;
         display: block;
-        border: 1px solid #ddd;
+        /* border: 1px solid #ddd; */
         border-radius: 6px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
       }
@@ -244,6 +244,89 @@
         <div class="project-tech">
           <strong>Technology stack:</strong> Amazon RDS, Amazon Bedrock, ECS,
           DynamoDB, GitHub.
+        </div>
+      </div>
+      <div class="project">
+        <div class="project-header">
+          <span> On‑premises server and database migration solution.</span>
+        </div>
+        <div class="project-meta">
+          <strong>Industry: </strong>Financial Services
+        </div>
+
+        <div class="project-section-title">Problem</div>
+        <div class="project-text">
+          The mortgage bank was operating on old outdated hardware that
+          frequently broke down. Each breakdown meant scrambling for IT support
+          at rising costs, while staff endured repeated downtime during
+          upgrades, patching, and repairs. These interruptions didn't just
+          affect the back office they slowed down loan processing, delayed
+          customer approvals, and left clients frustrated. Over time, the
+          constant disruptions eroded trust in the bank's ability to deliver
+          reliable financial services, putting both customer relationships and
+          the bank's reputation at risk.
+        </div>
+
+        <div class="project-section-title">Solution</div>
+        <div class="project-text">
+          The solution was to move the mortgage bank's servers and databases to
+          AWS through a <b>lift-and-shift migration.</b> By replicating
+          workloads in the cloud, hardware failures and costly maintenance are
+          no longer a burden. Staff continue using their familiar Active
+          Directory logins, while AWS provides the reliability, security, and
+          scalability needed to keep loan processing smooth and customer trust
+          intact.
+        </div>
+        <div class="project-text">
+          The solution sets up a secure, encrypted Site-to-Site VPN connection
+          to the on-premises network and leverages AWS cloud-native tools for
+          migration, monitoring, and ongoing security. This ensures workloads
+          are safely moved, continuously observed after deployment, and
+          protected against threats giving the mortgage bank reliable
+          performance without the burden of hardware failures.
+        </div>
+
+        <!-- Architecture Diagram Inserted Here -->
+        <img
+          src="./architectures/on-prem-migration-to-aws.drawio (4).png"
+          alt="AI Assistant Architecture Diagram"
+          class="architecture-diagram"
+        />
+
+        <div class="project-text">My responsibilities included:</div>
+        <ul>
+          <li>
+            <b>Created Landing Zones: </b>
+            Established secure, scalable environments with governance controls,
+            backup policies, and a structured deployment strategy to support
+            future growth.
+          </li>
+
+          <li>
+            <b>Designed network architecture: </b>
+            Defined CIDR ranges, configured security groups, and built Virtual
+            Private Clouds (VPCs) to ensure secure and efficient communication
+            across workloads.
+          </li>
+
+          <li>
+            <b>Established observability strategy: </b>
+            Implemented monitoring, logging, and alerting tools to give the team
+            full visibility into system health, performance, and security
+            events.
+          </li>
+
+          <li>
+            <b>Created technical documentation : </b>
+            Produced detailed architecture diagrams and documentation to guide
+            operations, support onboarding, and ensure knowledge transfer across
+            teams.
+          </li>
+        </ul>
+
+        <div class="project-tech">
+          <strong>Technology stack:</strong> Amazon RDS, EC2, Terraform, Elastic
+          Loadbalancer, Migration Hub, AWS DMS, Application Migration Service.
         </div>
       </div>
     </section>
