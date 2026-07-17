@@ -292,8 +292,8 @@
 
         <!-- Architecture Diagram Inserted Here -->
         <img
-          src="./architectures/on-prem-migration-to-aws.drawio (4).png"
-          alt="AI Assistant Architecture Diagram"
+          src="./architectures/on-prem-migration-to-aws.drawio.png"
+          alt="on-prem-migration-to-aws Architecture Diagram"
           class="architecture-diagram"
         />
 
@@ -331,6 +331,73 @@
         <div class="project-tech">
           <strong>Technology stack:</strong> Amazon RDS, EC2, Terraform, Elastic
           Loadbalancer, Migration Hub, AWS DMS, Application Migration Service.
+        </div>
+      </div>
+      <div class="project">
+        <div class="project-header">
+          <span>
+            Transaction Log–Based CDC Pipeline for Real‑Time Fraud
+            Detection</span
+          >
+        </div>
+        <div class="project-meta">
+          <strong>Industry:</strong> Financial Services
+        </div>
+
+        <div class="project-section-title">Problem</div>
+        <div class="project-text">
+          The bank needed a way to detect fraudulent activity in real time
+          without impacting transaction performance. Traditional batch ETL jobs
+          were too slow, and trigger‑based CDC approaches introduced locks and
+          overhead on critical tables, risking customer experience during
+          withdrawals and payments.
+        </div>
+
+        <div class="project-section-title">Solution</div>
+        <div class="project-text">
+          Implemented a transaction log–based CDC pipeline using AWS DMS.
+          PostgreSQL WAL logs were enabled via parameter groups to capture
+          inserts, updates, and deletes asynchronously. DMS streamed these
+          changes as JSON events into AWS Managed Kafka (MSK) topics for
+          <code>transactions</code>, <code>payments</code>, and
+          <code>withdrawals</code>.
+        </div>
+        <div class="project-text">
+          A fraud detection MSK consumer subscribed to these topics, invoked a
+          trained model through a REST API <code>/predict</code> endpoint, and
+          published results into a new <code>fraud_scores</code> topic. A second
+          consumer subscribed to <code>fraud_scores</code>
+          and updated database records to disable withdrawals flagged as
+          fraudulent.
+        </div>
+
+        <!-- Architecture Diagram Inserted Here -->
+        <img
+          src="./architectures/transaction-log-cdc-pipeline.drawio.png"
+          alt="Transaction Log CDC Pipeline Architecture Diagram"
+          class="architecture-diagram"
+        />
+
+        <div class="project-text">My responsibilities included:</div>
+        <ul>
+          <li>Configured RDS PostgreSQL parameter groups for WAL‑based CDC.</li>
+          <li>Designed DMS tasks to stream JSON events into MSK topics.</li>
+          <li>
+            Developed MSK consumers for fraud detection and withdrawal
+            enforcement.
+          </li>
+          <li>
+            Integrated REST API model serving with Kafka producer publishing.
+          </li>
+          <li>
+            Created technical documentation and architecture diagrams for
+            stakeholders.
+          </li>
+        </ul>
+
+        <div class="project-tech">
+          <strong>Technology stack:</strong> Amazon RDS, AWS DMS, Amazon MSK,
+          ECS Fargate, Fraud Detection Model (REST API), Terraform.
         </div>
       </div>
     </section>
