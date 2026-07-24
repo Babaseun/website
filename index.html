@@ -12,6 +12,7 @@
         max-width: 800px;
         margin: 0 auto;
         padding: 20px;
+        overflow-x: hidden; /* Prevents horizontal scrollbars from 100vw breakouts */
       }
       header {
         border-bottom: 2px solid #333;
@@ -112,6 +113,21 @@
         display: block;
         border-radius: 6px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Full-screen breakout to take up the full viewport width */
+      .architecture-diagram.large-diagram {
+        width: 100vw;
+        max-width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        margin-top: 35px;
+        margin-bottom: 35px;
+        border-radius: 0;
+        box-shadow: none;
       }
 
       @media (min-width: 1200px) {
@@ -216,11 +232,11 @@
           search to fetch the exact policy clause or announcement instantly.
         </div>
 
-        <!-- Architecture Diagram Inserted Here -->
+        <!-- Architecture Diagram 1 (Full-Viewport Width) -->
         <img
           src="./architectures/AI-voice-assistant-app-v3.drawio.png"
           alt="AI Assistant Architecture Diagram"
-          class="architecture-diagram"
+          class="architecture-diagram large-diagram"
         />
 
         <div class="project-text">My responsibilities included:</div>
@@ -290,11 +306,11 @@
           performance without the burden of hardware failures.
         </div>
 
-        <!-- Architecture Diagram Inserted Here -->
+        <!-- Architecture Diagram 2 (Full-Viewport Width) -->
         <img
           src="./architectures/on-prem-migration-to-aws.drawio.png"
           alt="on-prem-migration-to-aws Architecture Diagram"
-          class="architecture-diagram"
+          class="architecture-diagram large-diagram"
         />
 
         <div class="project-text">My responsibilities included:</div>
@@ -371,11 +387,11 @@
           fraudulent.
         </div>
 
-        <!-- Architecture Diagram Inserted Here -->
+        <!-- Architecture Diagram 3 (Full-Viewport Width) -->
         <img
           src="./architectures/transaction-log-cdc-pipeline.drawio.png"
           alt="Transaction Log CDC Pipeline Architecture Diagram"
-          class="architecture-diagram"
+          class="architecture-diagram large-diagram"
         />
 
         <div class="project-text">My responsibilities included:</div>
@@ -398,6 +414,80 @@
         <div class="project-tech">
           <strong>Technology stack:</strong> Amazon RDS, AWS DMS, Amazon MSK,
           ECS Fargate, Fraud Detection Model (REST API), Terraform.
+        </div>
+      </div>
+      <div class="project">
+        <div class="project-header">
+          <span> Enterprise Healthcare Multicloud Platform </span>
+        </div>
+        <div class="project-meta"><strong>Industry:</strong> Healthcare</div>
+
+        <div class="project-section-title">Problem</div>
+        <div class="project-text">
+          A healthcare enterprise needed to deploy workloads across AWS, Azure,
+          and GCP to ensure resilience, meet HIPAA/GDPR compliance requirements,
+          and provide low‑latency access for clinicians and patients worldwide.
+          The challenge was maintaining strict PHI/PII governance, unified
+          identity management, and consistent observability across multiple
+          providers.
+        </div>
+
+        <div class="project-section-title">Solution</div>
+        <div class="project-text">
+          Implemented a multicloud Kubernetes architecture spanning AWS, Azure,
+          and GCP. Each cluster was exposed via its native Gateway API
+          controller, while <b>ExternalDNS</b> synchronized endpoints into
+          <b>Cloudflare</b> as the authoritative DNS layer. Cloudflare Load
+          Balancing and Geo Routing ensured patients and clinicians were routed
+          to the nearest compliant cluster (af‑south‑1, us‑east‑1, eu‑west‑1).
+          Clinical staff accounts were provisioned in <b>Azure Entra ID</b>,
+          enabling secure login to healthcare dashboards and applications
+          powered by workloads inside the cluster. <b>OpenUnison</b> was used
+          exclusively by DevOps teams to provide enterprise SSO and RBAC for
+          cluster and infrastructure access, enforcing HIPAA‑aligned governance.
+          Observability pipelines ensured auditability and proactive monitoring
+          of sensitive workloads.
+        </div>
+
+        <!-- Architecture Diagram 4 (Full-Viewport Width) -->
+        <img
+          src="./architectures/multicloud.drawio-final.png"
+          alt="Enterprise Healthcare Multicloud Architecture Diagram"
+          class="architecture-diagram large-diagram"
+        />
+
+        <div class="project-text">My responsibilities included:</div>
+        <ul>
+          <li>
+            Architected cross‑cloud Kubernetes networking and gateway
+            integration.
+          </li>
+          <li>
+            Implemented ExternalDNS with Cloudflare for unified DNS management.
+          </li>
+          <li>
+            Configured Cloudflare Load Balancing and Geo Routing policies.
+          </li>
+          <li>
+            Integrated OpenUnison for DevOps SSO and HIPAA‑compliant RBAC.
+          </li>
+          <li>
+            Provisioned Azure Entra ID accounts for clinical staff application
+            access.
+          </li>
+          <li>Established observability pipelines for PHI/PII auditability.</li>
+          <li>
+            Produced technical documentation and enterprise architecture
+            diagrams.
+          </li>
+        </ul>
+
+        <div class="project-tech">
+          <strong>Technology stack:</strong> Kubernetes, AWS Gateway API, Azure
+          Gateway Controller, GCP Gateway Controller, ExternalDNS, Cloudflare
+          DNS & Load Balancing, OpenUnison (DevOps access), Azure Entra ID
+          (clinical staff accounts), Terraform, Prometheus, HIPAA/GDPR
+          compliance frameworks.
         </div>
       </div>
     </section>
