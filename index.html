@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Adeyemi Onibokun | Solutions Architect</title>
     <style>
+      html {
+        scrollbar-gutter: stable; /* Fixes the 100vw horizontal scroll bug */
+      }
+
       body {
         font-family: Arial, sans-serif;
         line-height: 1.5;
@@ -12,7 +16,7 @@
         max-width: 800px;
         margin: 0 auto;
         padding: 20px;
-        overflow-x: hidden; /* Prevents horizontal scrollbars from 100vw breakouts */
+        overflow-x: hidden; /* Hides any accidental horizontal scroll */
       }
       header {
         border-bottom: 2px solid #333;
@@ -83,6 +87,18 @@
         font-size: 14px;
       }
 
+      /* Custom Utility Classes */
+      .profile-summary {
+        margin: 0;
+        font-size: 14px;
+      }
+      .project-disclaimer {
+        font-size: 14px;
+        font-style: italic;
+        margin-bottom: 20px;
+        color: #555;
+      }
+
       /* Badge Styles */
       .badge-container {
         display: flex;
@@ -105,20 +121,27 @@
         object-fit: contain;
       }
 
+      /* Figure & Diagram Base Styles */
+      .architecture-figure {
+        margin: 35px 0;
+      }
       .architecture-diagram {
         width: 100%;
-        max-width: 900px;
         height: auto;
-        margin: 20px auto;
         display: block;
-        border-radius: 6px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      figcaption {
+        text-align: center;
+        font-size: 12px;
+        color: #666;
+        margin-top: 8px;
+        font-style: italic;
       }
 
-      /* Full-screen breakout to take up the full viewport width */
-      .architecture-diagram.large-diagram {
-        width: 100vw;
-        max-width: 100vw;
+      /* ALL FIGURES: Full viewport width breakout */
+      .architecture-figure.large-figure {
+        max-width: none;
+        width: 100vw; /* Full viewport width */
         position: relative;
         left: 50%;
         right: 50%;
@@ -126,26 +149,24 @@
         margin-right: -50vw;
         margin-top: 35px;
         margin-bottom: 35px;
+      }
+      .architecture-figure.large-figure .architecture-diagram {
+        width: 100%;
+        height: auto;
         border-radius: 0;
         box-shadow: none;
-      }
-
-      @media (min-width: 1200px) {
-        .architecture-diagram {
-          max-width: 1000px;
-        }
       }
     </style>
   </head>
   <body>
     <header>
       <h1>Adeyemi Onibokun</h1>
-      <div class="contact-info">
+      <nav class="contact-info">
         <a href="mailto:ababaseun@gmail.com">ababaseun@gmail.com</a> |
         <a href="https://www.linkedin.com/in/adeyemi-onibokun/">LinkedIn</a> |
         <a href="https://github.com/Babaseun">GitHub</a>
-      </div>
-      <p style="margin: 0; font-size: 14px">
+      </nav>
+      <p class="profile-summary">
         Software Engineer and Cloud Solutions Architect with expertise in
         cloud-native applications, Kubernetes, DevOps automation, and AI-powered
         systems.
@@ -188,26 +209,19 @@
 
     <section class="section">
       <h2>Projects</h2>
-      <p
-        style="
-          font-size: 14px;
-          font-style: italic;
-          margin-bottom: 20px;
-          color: #555;
-        "
-      >
+      <p class="project-disclaimer">
         All case studies represent anonymized client work. Specific
         implementations and business details have been generalized to protect
         client confidentiality.
       </p>
 
-      <div class="project">
-        <div class="project-header">
+      <article class="project">
+        <h3 class="project-header">
           <span> AI Assistant knowledge retrieval solution</span>
-        </div>
+        </h3>
         <div class="project-meta"><strong>Industry:</strong> Education</div>
 
-        <div class="project-section-title">Problem</div>
+        <h4 class="project-section-title">Problem</h4>
         <div class="project-text">
           Education Directors must navigate a massive, fragmented knowledge base
           including multi-page policies, FAQs, announcements, and call logs
@@ -216,7 +230,7 @@
           and slows down critical response times.
         </div>
 
-        <div class="project-section-title">Solution</div>
+        <h4 class="project-section-title">Solution</h4>
         <div class="project-text">
           Nova Sonic solves this by introducing a low-latency, real-time AI
           voice assistant. Instead of hunting through documents mid-call,
@@ -228,21 +242,29 @@
           Node.js Socket.io pipeline over WebSockets to instantly pull cached
           data or stream voice requests to AWS Bedrock. If a query falls outside
           the core model's scope, the backend automatically triggers a fallback
-          route to a custom RAG API which utilizes Gemini Embeddings and vector
-          search to fetch the exact policy clause or announcement instantly.
+          route to a custom RAG API. This API leverages
+          <strong>LlamaIndex</strong> for advanced document parsing and
+          structured indexing, utilizing Gemini Embeddings and vector search to
+          fetch the exact policy clause or announcement instantly.
         </div>
 
-        <!-- Architecture Diagram 1 (Full-Viewport Width) -->
-        <img
-          src="./architectures/AI-voice-assistant-app-v3.drawio.png"
-          alt="AI Assistant Architecture Diagram"
-          class="architecture-diagram large-diagram"
-        />
+        <!-- FULL VIEWPORT WIDTH FIGURE -->
+        <figure class="architecture-figure large-figure">
+          <img
+            src="./architectures/AI-voice-assistant-app-v3.drawio.png"
+            alt="Architecture diagram showing the AI voice assistant data flow from client to AWS Bedrock."
+            class="architecture-diagram"
+          />
+          <figcaption>
+            Fig 1. AI Assistant Real-Time Voice Retrieval Architecture
+          </figcaption>
+        </figure>
 
         <div class="project-text">My responsibilities included:</div>
         <ul>
           <li>
-            Designed RAG architecture and cron jobs that pulls updated FAQs,
+            Designed RAG architecture using <strong>LlamaIndex</strong> and
+            implemented cron jobs that pull, chunk, and index updated FAQs,
             availability schedules, and announcements from specified data
             sources.
           </li>
@@ -263,35 +285,36 @@
 
         <div class="project-tech">
           <strong>Technology stack:</strong> Amazon RDS, Amazon Bedrock, ECS,
-          DynamoDB, GitHub.
+          LlamaIndex, GitHub.
         </div>
-      </div>
-      <div class="project">
-        <div class="project-header">
+      </article>
+
+      <article class="project">
+        <h3 class="project-header">
           <span> On‑premises server and database migration solution.</span>
-        </div>
+        </h3>
         <div class="project-meta">
           <strong>Industry: </strong>Financial Services
         </div>
 
-        <div class="project-section-title">Problem</div>
+        <h4 class="project-section-title">Problem</h4>
         <div class="project-text">
           The mortgage bank was operating on old outdated hardware that
           frequently broke down. Each breakdown meant scrambling for IT support
           at rising costs, while staff endured repeated downtime during
           upgrades, patching, and repairs. These interruptions didn't just
-          affect the back office they slowed down loan processing, delayed
+          affect the back office; they slowed down loan processing, delayed
           customer approvals, and left clients frustrated. Over time, the
           constant disruptions eroded trust in the bank's ability to deliver
           reliable financial services, putting both customer relationships and
           the bank's reputation at risk.
         </div>
 
-        <div class="project-section-title">Solution</div>
+        <h4 class="project-section-title">Solution</h4>
         <div class="project-text">
           The solution was to move the mortgage bank's servers and databases to
           AWS through a <b>lift-and-shift migration.</b> By replicating
-          workloads in the cloud, hardware failures and costly maintenance are
+          workloads in the cloud, hardware failures and costly maintenance were
           no longer a burden. Staff continue using their familiar Active
           Directory logins, while AWS provides the reliability, security, and
           scalability needed to keep loan processing smooth and customer trust
@@ -306,12 +329,17 @@
           performance without the burden of hardware failures.
         </div>
 
-        <!-- Architecture Diagram 2 (Full-Viewport Width) -->
-        <img
-          src="./architectures/on-prem-migration-to-aws.drawio.png"
-          alt="on-prem-migration-to-aws Architecture Diagram"
-          class="architecture-diagram large-diagram"
-        />
+        <!-- FULL VIEWPORT WIDTH FIGURE -->
+        <figure class="architecture-figure large-figure">
+          <img
+            src="./architectures/on-prem-migration-to-aws.drawio.png"
+            alt="Architecture diagram showing on-premises servers and databases migrating to AWS cloud."
+            class="architecture-diagram"
+          />
+          <figcaption>
+            Fig 2. On-Premises to AWS Lift-and-Shift Migration Architecture
+          </figcaption>
+        </figure>
 
         <div class="project-text">My responsibilities included:</div>
         <ul>
@@ -348,19 +376,20 @@
           <strong>Technology stack:</strong> Amazon RDS, EC2, Terraform, Elastic
           Loadbalancer, Migration Hub, AWS DMS, Application Migration Service.
         </div>
-      </div>
-      <div class="project">
-        <div class="project-header">
+      </article>
+
+      <article class="project">
+        <h3 class="project-header">
           <span>
             Transaction Log–Based CDC Pipeline for Real‑Time Fraud
             Detection</span
           >
-        </div>
+        </h3>
         <div class="project-meta">
           <strong>Industry:</strong> Financial Services
         </div>
 
-        <div class="project-section-title">Problem</div>
+        <h4 class="project-section-title">Problem</h4>
         <div class="project-text">
           The bank needed a way to detect fraudulent activity in real time
           without impacting transaction performance. Traditional batch ETL jobs
@@ -369,7 +398,7 @@
           withdrawals and payments.
         </div>
 
-        <div class="project-section-title">Solution</div>
+        <h4 class="project-section-title">Solution</h4>
         <div class="project-text">
           Implemented a transaction log–based CDC pipeline using AWS DMS.
           PostgreSQL WAL logs were enabled via parameter groups to capture
@@ -387,12 +416,17 @@
           fraudulent.
         </div>
 
-        <!-- Architecture Diagram 3 (Full-Viewport Width) -->
-        <img
-          src="./architectures/transaction-log-cdc-pipeline.drawio.png"
-          alt="Transaction Log CDC Pipeline Architecture Diagram"
-          class="architecture-diagram large-diagram"
-        />
+        <!-- FULL VIEWPORT WIDTH FIGURE -->
+        <figure class="architecture-figure large-figure">
+          <img
+            src="./architectures/transaction-log-cdc-pipeline.drawio.png"
+            alt="Architecture diagram showing transaction log CDC pipeline streaming data from PostgreSQL to MSK for fraud detection."
+            class="architecture-diagram"
+          />
+          <figcaption>
+            Fig 3. Real-Time Fraud Detection CDC Pipeline Architecture
+          </figcaption>
+        </figure>
 
         <div class="project-text">My responsibilities included:</div>
         <ul>
@@ -415,14 +449,15 @@
           <strong>Technology stack:</strong> Amazon RDS, AWS DMS, Amazon MSK,
           ECS Fargate, Fraud Detection Model (REST API), Terraform.
         </div>
-      </div>
-      <div class="project">
-        <div class="project-header">
+      </article>
+
+      <article class="project">
+        <h3 class="project-header">
           <span> Enterprise Healthcare Multicloud Platform </span>
-        </div>
+        </h3>
         <div class="project-meta"><strong>Industry:</strong> Healthcare</div>
 
-        <div class="project-section-title">Problem</div>
+        <h4 class="project-section-title">Problem</h4>
         <div class="project-text">
           A healthcare enterprise needed to deploy workloads across AWS, Azure,
           and GCP to ensure resilience, meet HIPAA/GDPR compliance requirements,
@@ -432,7 +467,7 @@
           providers.
         </div>
 
-        <div class="project-section-title">Solution</div>
+        <h4 class="project-section-title">Solution</h4>
         <div class="project-text">
           Implemented a multicloud Kubernetes architecture spanning AWS, Azure,
           and GCP. Each cluster was exposed via its native Gateway API
@@ -449,12 +484,17 @@
           of sensitive workloads.
         </div>
 
-        <!-- Architecture Diagram 4 (Full-Viewport Width) -->
-        <img
-          src="./architectures/multicloud.drawio-final.png"
-          alt="Enterprise Healthcare Multicloud Architecture Diagram"
-          class="architecture-diagram large-diagram"
-        />
+        <!-- FULL VIEWPORT WIDTH FIGURE -->
+        <figure class="architecture-figure large-figure">
+          <img
+            src="./architectures/multicloud.drawio-final.png"
+            alt="Architecture diagram showing a multicloud Kubernetes setup across AWS, Azure, and GCP using Cloudflare and OpenUnison."
+            class="architecture-diagram"
+          />
+          <figcaption>
+            Fig 4. Enterprise Healthcare Multicloud Platform Architecture
+          </figcaption>
+        </figure>
 
         <div class="project-text">My responsibilities included:</div>
         <ul>
@@ -489,7 +529,7 @@
           (clinical staff accounts), Terraform, Prometheus, HIPAA/GDPR
           compliance frameworks.
         </div>
-      </div>
+      </article>
     </section>
   </body>
 </html>
