@@ -90,7 +90,9 @@ jobs:
           platforms: linux/amd64
           push: true
           provenance: false
-          tags: ${{ env.ECR_REPOSITORY_URL }}:${{ steps.image.outputs.tag }}
+          tags: |
+            ${{ env.ECR_REPOSITORY_URL }}:${{ steps.image.outputs.tag }}
+            ${{ env.ECR_REPOSITORY_URL }}:latest
           labels: |
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
@@ -107,8 +109,16 @@ jobs:
             echo ""
             echo "\`${repo}:${IMAGE_TAG}\`"
             echo ""
+            echo "Also tagged: \`${repo}:latest\`"
+            echo ""
             echo "Digest: \`${IMAGE_DIGEST}\`"
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Roll out latest image
+        run: |
+          aws eks update-kubeconfig --name dev-health --region "$AWS_REGION"
+          kubectl rollout restart deployment/website --namespace website
+          kubectl rollout status deployment/website --namespace website --timeout=180s
 
   deploy:
     environment:
