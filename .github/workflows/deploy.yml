@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Build, push, and deploy website
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   # Allow manual trigger from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+# id-token: write is used by both GitHub Pages and AWS OIDC.
 permissions:
   contents: read
   pages: write
@@ -19,6 +19,97 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  build-and-push:
+    # The OIDC role is scoped to the main branch.
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      # Repository secrets under Settings > Secrets and variables > Actions > Secrets.
+      # If they are scoped to a GitHub Environment instead, add `environment: <name>` to this job.
+      # AWS_ROLE_ARN: IAM role assumed through GitHub OIDC.
+      # ECR_REPOSITORY_URL: full repo URI, without https://.
+      # AWS_REGION: optional repository variable, defaults to af-south-1.
+      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+      ECR_REPOSITORY_URL: ${{ secrets.ECR_REPOSITORY_URL }}
+      AWS_REGION: ${{ vars.AWS_REGION || 'af-south-1' }}
+    steps:
+      - name: Validate required variables
+        run: |
+          if [ -z "${AWS_ROLE_ARN:-}" ]; then
+            echo "::error::Repository secret AWS_ROLE_ARN is not set."
+            exit 1
+          fi
+          if [ -z "${ECR_REPOSITORY_URL:-}" ]; then
+            echo "::error::Repository secret ECR_REPOSITORY_URL is not set."
+            exit 1
+          fi
+          case "$ECR_REPOSITORY_URL" in
+            *://*)
+              echo "::error::ECR_REPOSITORY_URL must not include a URL scheme (https://)."
+              exit 1
+              ;;
+            */)
+              echo "::error::ECR_REPOSITORY_URL must not end with a slash."
+              exit 1
+              ;;
+          esac
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Mask AWS account details
+        run: |
+          registry="${ECR_REPOSITORY_URL%%/*}"
+          account_id="${registry%%.dkr.ecr.*}"
+          echo "::add-mask::$registry"
+          echo "::add-mask::$account_id"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: github-actions-website-ecr
+
+      - name: Log in to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set image tag
+        id: image
+        run: |
+          echo "tag=${GITHUB_SHA}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          provenance: false
+          tags: ${{ env.ECR_REPOSITORY_URL }}:${{ steps.image.outputs.tag }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+
+      - name: Write image summary
+        env:
+          IMAGE_REPO: ${{ env.ECR_REPOSITORY_URL }}
+          IMAGE_TAG: ${{ steps.image.outputs.tag }}
+          IMAGE_DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          repo="${IMAGE_REPO#*/}"
+          {
+            echo "### Image pushed"
+            echo ""
+            echo "\`${repo}:${IMAGE_TAG}\`"
+            echo ""
+            echo "Digest: \`${IMAGE_DIGEST}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
   deploy:
     environment:
       name: github-pages
