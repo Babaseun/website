@@ -1,4 +1,4 @@
-name: Build, push, and deploy website
+name: Build and push website
 
 on:
   push:
@@ -7,16 +7,13 @@ on:
   # Allow manual trigger from the Actions tab
   workflow_dispatch:
 
-# id-token: write is used by both GitHub Pages and AWS OIDC.
 permissions:
   contents: read
-  pages: write
   id-token: write
 
-# Allow only one concurrent deployment; skip queued runs between in-progress and latest
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: "website-${{ github.ref }}"
+  cancel-in-progress: true
 
 jobs:
   build-and-push:
@@ -24,36 +21,10 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     env:
-      # Repository secrets under Settings > Secrets and variables > Actions > Secrets.
-      # If they are scoped to a GitHub Environment instead, add `environment: <name>` to this job.
-      # AWS_ROLE_ARN: IAM role assumed through GitHub OIDC.
-      # ECR_REPOSITORY_URL: full repo URI, without https://.
-      # AWS_REGION: optional repository variable, defaults to af-south-1.
       AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
       ECR_REPOSITORY_URL: ${{ secrets.ECR_REPOSITORY_URL }}
-      AWS_REGION: ${{ vars.AWS_REGION || 'af-south-1' }}
+      AWS_REGION: ${{ vars.AWS_REGION }}
     steps:
-      - name: Validate required variables
-        run: |
-          if [ -z "${AWS_ROLE_ARN:-}" ]; then
-            echo "::error::Repository secret AWS_ROLE_ARN is not set."
-            exit 1
-          fi
-          if [ -z "${ECR_REPOSITORY_URL:-}" ]; then
-            echo "::error::Repository secret ECR_REPOSITORY_URL is not set."
-            exit 1
-          fi
-          case "$ECR_REPOSITORY_URL" in
-            *://*)
-              echo "::error::ECR_REPOSITORY_URL must not include a URL scheme (https://)."
-              exit 1
-              ;;
-            */)
-              echo "::error::ECR_REPOSITORY_URL must not end with a slash."
-              exit 1
-              ;;
-          esac
-
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -113,31 +84,3 @@ jobs:
             echo ""
             echo "Digest: \`${IMAGE_DIGEST}\`"
           } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Roll out latest image
-        run: |
-          aws eks update-kubeconfig --name dev-health --region "$AWS_REGION"
-          kubectl rollout restart deployment/website --namespace website
-          kubectl rollout status deployment/website --namespace website --timeout=180s
-
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # Upload the entire repo root (where index.html lives)
-          path: "."
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4

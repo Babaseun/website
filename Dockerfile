@@ -1,5 +1,4 @@
-# syntax=docker/dockerfile:1
-FROM nginxinc/nginx-unprivileged:stable-alpine
+FROM nginxinc/nginx-unprivileged:1.28-alpine
 
 LABEL org.opencontainers.image.title="Adeyemi Onibokun | Solutions Architect"
 LABEL org.opencontainers.image.description="Static portfolio site served by nginx"
