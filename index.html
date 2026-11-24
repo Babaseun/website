@@ -157,6 +157,63 @@
         border-radius: 0;
         box-shadow: none;
       }
+
+      /* AI assistant call to action */
+      .ai-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        max-width: 100%;
+        margin-top: 20px;
+        padding: 14px 24px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #0066cc, #7a2ff2);
+        color: #fff;
+        font-size: 16px;
+        font-weight: bold;
+        text-decoration: none;
+        box-shadow: 0 4px 14px rgba(0, 102, 204, 0.35);
+        transition:
+          transform 0.15s ease,
+          box-shadow 0.15s ease;
+      }
+      .ai-cta:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 22px rgba(0, 102, 204, 0.45);
+      }
+      .ai-cta:focus-visible {
+        outline: 3px solid #333;
+        outline-offset: 3px;
+      }
+      .ai-cta-dot {
+        width: 8px;
+        height: 8px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: #4ade80;
+        animation: ai-cta-pulse 2s infinite;
+      }
+      @keyframes ai-cta-pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+        }
+        70% {
+          box-shadow: 0 0 0 8px rgba(74, 222, 128, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .ai-cta,
+        .ai-cta-dot {
+          animation: none;
+          transition: none;
+        }
+        .ai-cta:hover {
+          transform: none;
+        }
+      }
     </style>
   </head>
   <body>
@@ -172,6 +229,16 @@
         cloud-native applications, Kubernetes, DevOps automation, and AI-powered
         systems.
       </p>
+      <a
+        class="ai-cta"
+        href="https://ai.adeyemionibokun.com/"
+        target="_blank"
+        rel="noopener"
+      >
+        <span class="ai-cta-dot" aria-hidden="true"></span>
+        Try my AI assistant live
+        <span aria-hidden="true">→</span>
+      </a>
     </header>
 
     <section class="section">
